@@ -7,10 +7,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 
 //* middleware
 app.use(cors());
-app.use(express());
-
-const productCategories = require('./data/productCategory.json');
-const products = require('./data/products.json');
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('E-Buy server is running!')
@@ -23,13 +20,17 @@ async function run() {
     try {
         const productsCategoriesCollection = client.db('E-Buy').collection('productCategories');
         const productsCollection = client.db('E-Buy').collection('products');
+        const sellersCollection = client.db('E-Buy').collection('sellers');
+        const buyersCollection = client.db('E-Buy').collection('buyers');
 
+        //* get product Categories
         app.get('/productCategories', async (req, res) => {
             const query = {};
             const productCategories = await productsCategoriesCollection.find(query).toArray();
             res.send(productCategories);
         })
 
+        //* get all products based on product name
         app.get('/products/:name', async (req, res) => {
             const name = req.params.name;
             const query = { name: name }
@@ -37,6 +38,14 @@ async function run() {
             res.send(allProducts)
         })
 
+        //* store seller info
+        app.post('/sellers', async (req, res) => {
+            const seller = req.body;
+            const result = await sellersCollection.insertOne(seller);
+            res.send(result);
+        });
+
+       
 
     }
     finally {
