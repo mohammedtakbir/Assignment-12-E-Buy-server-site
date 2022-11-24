@@ -45,7 +45,12 @@ async function run() {
             res.send(result);
         });
 
-       
+        //* store buyer info
+        app.post('/buyers', async (req, res) => {
+            const buyer = req.body;
+            const result = await buyersCollection.insertOne(buyer);
+            res.send(result);
+        });
 
     }
     finally {
