@@ -1,0 +1,173 @@
+[
+    {
+        "name": "samsung",
+        "image": "https://i.ebayimg.com/images/g/z6UAAOSwq5tiuuyX/s-l640.jpg",
+        "location": "dhaka, Bangladesh",
+        "brand": "Samsung",
+        "model_name": "Samsung Galaxy S10",
+        "resale_price": 199,
+        "original_price": 599,
+        "year_of_use": 2,
+        "post_time": "November 10 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Good",
+        "purchase_year": 2020,
+        "mobile_number": "01966699966",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "samsung",
+        "image": "https://i.ebayimg.com/images/g/Z70AAOSwNBleoBe8/s-l640.jpg",
+        "location": "dhaka, Bangladesh",
+        "brand": "Samsung",
+        "model_name": "Samsung Galaxy Note10",
+        "resale_price": 299,
+        "original_price": 699,
+        "year_of_use": 1.5,
+        "post_time": "November 01 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Excellent",
+        "purchase_year": 2021,
+        "mobile_number": "01966699966",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "samsung",
+        "image": "https://i.ebayimg.com/images/g/~zMAAOSww6Ri-840/s-l640.png",
+        "location": "dhaka, Bangladesh",
+        "brand": "Samsung",
+        "model_name": "Samsung Galaxy Note8",
+        "resale_price": 159,
+        "original_price": 599,
+        "year_of_use": 2.5,
+        "post_time": "November 05 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Fair",
+        "purchase_year": 2019,
+        "mobile_number": "01966699966",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "apple",
+        "image": "https://i.ebayimg.com/images/g/JE8AAOSwAFpiuuyZ/s-l640.jpg",
+        "location": "Narayanganj, Bangladesh",
+        "brand": "Apple",
+        "model_name": "Apple iPhone XS Max",
+        "resale_price": 349,
+        "original_price": 799,
+        "year_of_use": 2,
+        "post_time": "November 08 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Good",
+        "purchase_year": 2020,
+        "mobile_number": "01963211478",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "apple",
+        "image": "https://i.ebayimg.com/images/g/Kj8AAOSwoAliuuyY/s-l640.jpg",
+        "location": "Gazipur, Bangladesh",
+        "brand": "Apple",
+        "model_name": "Apple iPhone XR",
+        "resale_price": 259,
+        "original_price": 599,
+        "year_of_use": 1.5,
+        "post_time": "November 06 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Excellent",
+        "purchase_year": 2020,
+        "mobile_number": "013698745",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "apple",
+        "image": "https://i.ebayimg.com/images/g/ZS0AAOSwD9diNGZH/s-l1600.jpg",
+        "location": "Gazipur, Bangladesh",
+        "brand": "Apple",
+        "model_name": "Apple iPhone 8",
+        "resale_price": 199,
+        "original_price": 459,
+        "year_of_use": 2.5,
+        "post_time": "November 09 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Excellent",
+        "purchase_year": 2019,
+        "mobile_number": "013698745",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "google",
+        "image": "https://i.ebayimg.com/images/g/SPoAAOSwPq5hgkSh/s-l1600.png",
+        "location": "Narshingdi, Bangladesh",
+        "brand": "Google",
+        "model_name": "Google Pixel 4a",
+        "resale_price": 159,
+        "original_price": 399,
+        "year_of_use": 1,
+        "post_time": "November 08 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Good",
+        "purchase_year": 2021,
+        "mobile_number": "014789632",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "google",
+        "image": "https://i.ebayimg.com/images/g/qHcAAOSwN1BgyoKi/s-l500.jpg",
+        "location": "dhaka, Bangladesh",
+        "brand": "Google",
+        "model_name": "Google Pixel 3",
+        "resale_price": 129,
+        "original_price": 799,
+        "year_of_use": 3.5,
+        "post_time": "November 05 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Fair",
+        "purchase_year": 2018,
+        "mobile_number": "0199887456",
+        "description": "Very good condition. Not even a single scratch or dent."
+    },
+    {
+        "name": "google",
+        "image": "https://i.ebayimg.com/images/g/ytUAAOSwSrRgqt~v/s-l500.jpg",
+        "location": "dhaka, Bangladesh",
+        "brand": "Google",
+        "model_name": "Google Pixel 2 XL",
+        "resale_price": 119,
+        "original_price": 619,
+        "year_of_use": 4,
+        "post_time": "November 19 2022",
+        "seller": {
+            "name": "Mohammed Amir",
+            "verify": true
+        },
+        "condition": "Fair",
+        "purchase_year": 2018,
+        "mobile_number": "0189632147",
+        "description": "Very good condition. Not even a single scratch or dent."
+    }
+]
