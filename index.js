@@ -16,17 +16,6 @@ app.get('/', (req, res) => {
     res.send('E-Buy server is running!')
 })
 
-/* app.get('/productCategories', (req, res) => {
-    res.send(productCategories);
-}) */
-
-app.get('/products/:brandId', (req, res) => {
-    const brandId = req.params.brandId;
-    const productsCategory = products.filter(product => product.category_id === brandId)
-    res.send(productsCategory);
-})
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.drjbcpx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -41,11 +30,13 @@ async function run() {
             res.send(productCategories);
         })
 
-        /* app.get('/products/:name', async(req, res) => {
+        app.get('/products/:name', async (req, res) => {
             const name = req.params.name;
-            const allProducts = await 
+            const query = { name: name }
+            const allProducts = await productsCollection.find(query).toArray();
+            res.send(allProducts)
         })
- */
+
 
     }
     finally {
