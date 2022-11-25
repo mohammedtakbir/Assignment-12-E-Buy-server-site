@@ -4,6 +4,7 @@ const cors = require('cors');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
 
 //* middleware
 app.use(cors());
@@ -12,6 +13,21 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('E-Buy server is running!')
 })
+
+function verifyJWT(req, res, next) {
+    const authToken = req.headers.authorization
+    if (!authToken) {
+        return res.status(401).send({ message: 'unauthorized access' })
+    }
+    const token = authToken.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+        if (err) {
+            return res.status(403).send({ message: 'forbidden access' })
+        }
+        req.decoded = decoded
+        next();
+    })
+}
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.drjbcpx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
@@ -30,8 +46,16 @@ async function run() {
             res.send(productCategories);
         })
 
+        //* jwt
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1d' })
+            res.send({ token });
+            console.log(email)
+        })
+
         //?-------------------products------------------
-        
+
         //* add a new products to the database
         app.post('/products', async (req, res) => {
             const email = req.query.email;
@@ -44,7 +68,7 @@ async function run() {
             const result = await productsCollection.insertOne(product);
             res.send(result);
         })
-        
+
         //* get all products based on product name
         app.get('/products/:name', async (req, res) => {
             const name = req.params.name;
@@ -52,7 +76,7 @@ async function run() {
             const allProducts = await productsCollection.find(query).toArray();
             res.send(allProducts)
         })
-        
+
         //* get all products based on email
         app.get('/products', async (req, res) => {
             const email = req.query.email;
@@ -60,7 +84,7 @@ async function run() {
             const products = await productsCollection.find(query).toArray();
             res.send(products);
         })
-        
+
         //* delete a product
         app.delete('/products/:id', async (req, res) => {
             const id = req.params.id;
@@ -70,7 +94,7 @@ async function run() {
         })
 
         //?-------------------users------------------
-        
+
         //* store users info
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -119,21 +143,25 @@ async function run() {
         })
 
         //?------------Bookings-----------
-        
+
         //* store booked product to the database
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         })
-        
-        app.get('/bookings', async (req, res) => {
+
+        app.get('/bookings', verifyJWT, async (req, res) => {
+            const decodedEmail = req.decoded.email;
             const email = req.query.email;
+            if (decodedEmail !== email) {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
             const query = { email: email };
             const orders = await bookingsCollection.find(query).toArray();
             res.send(orders);
         })
-        
+
 
     }
     finally {
