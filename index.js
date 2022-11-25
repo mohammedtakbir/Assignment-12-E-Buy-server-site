@@ -30,66 +30,8 @@ async function run() {
             res.send(productCategories);
         })
 
-        //* get all products based on product name
-        app.get('/products/:name', async (req, res) => {
-            const name = req.params.name;
-            const query = { name: name }
-            const allProducts = await productsCollection.find(query).toArray();
-            res.send(allProducts)
-        })
-
-        //* get all products based on email
-        app.get('/products', async (req, res) => {
-            const email = req.query.email;
-            const query = { sellerEmail: email };
-            const products = await productsCollection.find(query).toArray();
-            res.send(products);
-        })
-
-        //* delete a product
-        app.delete('/products/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await productsCollection.deleteOne(query);
-            res.json(result);
-        })
-
-        //* store user info
-        app.post('/users', async (req, res) => {
-            const user = req.body;
-            const result = await usersCollection.insertOne(user);
-            res.send(result);
-        });
-
-        //* 
-        app.get('/users/sellers/:email', async (req, res) => {
-            const email = req.params.email;
-            const query = { email: email };
-            const user = await usersCollection.findOne(query);
-            res.send({ isSeller: user?.role === 'seller' });
-        })
-        //* 
-        app.get('/users/admin/:email', async (req, res) => {
-            const email = req.params.email;
-            const query = { email: email };
-            const user = await usersCollection.findOne(query);
-            res.send({ isAdmin: user?.role === 'admin' });
-        })
-
-        //* store booked product to the database
-        app.post('/bookings', async (req, res) => {
-            const booking = req.body;
-            const result = await bookingsCollection.insertOne(booking);
-            res.send(result);
-        })
-
-        app.get('/bookings', async (req, res) => {
-            const email = req.query.email;
-            const query = { email: email };
-            const orders = await bookingsCollection.find(query).toArray();
-            res.send(orders);
-        })
-
+        //?-------------------products------------------
+        
         //* add a new products to the database
         app.post('/products', async (req, res) => {
             const email = req.query.email;
@@ -102,6 +44,96 @@ async function run() {
             const result = await productsCollection.insertOne(product);
             res.send(result);
         })
+        
+        //* get all products based on product name
+        app.get('/products/:name', async (req, res) => {
+            const name = req.params.name;
+            const query = { name: name }
+            const allProducts = await productsCollection.find(query).toArray();
+            res.send(allProducts)
+        })
+        
+        //* get all products based on email
+        app.get('/products', async (req, res) => {
+            const email = req.query.email;
+            const query = { sellerEmail: email };
+            const products = await productsCollection.find(query).toArray();
+            res.send(products);
+        })
+        
+        //* delete a product
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productsCollection.deleteOne(query);
+            res.json(result);
+        })
+
+        //?-------------------users------------------
+        
+        //* store users info
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
+
+        //* isSeller
+        app.get('/users/sellers/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            res.send({ isSeller: user?.role === 'seller' });
+        })
+
+        //* isAdmin
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            res.send({ isAdmin: user?.role === 'admin' });
+        })
+
+        //* load all sellers by role
+        app.get('/users/sellers', async (req, res) => {
+            const seller = req.query.user;
+            const query = { role: seller };
+            const result = await usersCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //* load all buyers by role
+        app.get('/users/buyers', async (req, res) => {
+            const buyer = req.query.user;
+            const query = { role: buyer };
+            const result = await usersCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //* delete an user
+        app.delete('/users/sellers/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(query);
+            res.json(result);
+        })
+
+        //?------------Bookings-----------
+        
+        //* store booked product to the database
+        app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingsCollection.insertOne(booking);
+            res.send(result);
+        })
+        
+        app.get('/bookings', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const orders = await bookingsCollection.find(query).toArray();
+            res.send(orders);
+        })
+        
 
     }
     finally {
