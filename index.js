@@ -40,20 +40,21 @@ async function run() {
         const usersCollection = client.db('E-Buy').collection('users');
         const bookingsCollection = client.db('E-Buy').collection('bookings');
         const paymentsCollection = client.db('E-Buy').collection('payments');
+        const advertiseItemsCollection = client.db('E-Buy').collection('advertiseItems');
 
         //* get product Categories
         app.get('/productCategories', async (req, res) => {
             const query = {};
             const productCategories = await productsCategoriesCollection.find(query).toArray();
             res.send(productCategories);
-        })
+        });
 
         //* jwt
         app.get('/jwt', async (req, res) => {
             const email = req.query.email;
             const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1d' })
             res.send({ token });
-        })
+        });
 
         //* users verify
         app.get('/users/verify', async (req, res) => {
@@ -61,7 +62,7 @@ async function run() {
             const query = { email: email };
             const user = await usersCollection.findOne(query);
             res.send({ isVerified: user?.seller_verify === true })
-        })
+        });
 
         //?-------------------products------------------
 
@@ -79,7 +80,6 @@ async function run() {
             };
             const result = await usersCollection.updateOne(filter, updatedDoc, options);
 
-            
             const filter2 = { sellerEmail: email };
             const options2 = { upsert: true };
             const updatedDoc2 = {
@@ -89,7 +89,7 @@ async function run() {
             };
             const result2 = await productsCollection.updateOne(filter2, updatedDoc2, options2);
             res.send(result);
-        })
+        });
 
         //* add a new products to the database
         app.post('/products', async (req, res) => {
@@ -102,16 +102,16 @@ async function run() {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
             res.send(result);
-        })
+        });
 
         //* get all products based on product name
         app.get('/products/:name', async (req, res) => {
             const name = req.params.name;
             const query = { name: name }
             const allProducts = await productsCollection.find(query).toArray();
-            const remainingProducts = allProducts.filter(product=> product.status !== 'sold');
+            const remainingProducts = allProducts.filter(product => product.status !== 'sold');
             res.send(remainingProducts);
-        })
+        });
 
         //* get all products based on email
         app.get('/products', async (req, res) => {
@@ -119,7 +119,7 @@ async function run() {
             const query = { sellerEmail: email };
             const products = await productsCollection.find(query).toArray();
             res.send(products);
-        })
+        });
 
         //* delete a product
         app.delete('/products/:id', async (req, res) => {
@@ -127,7 +127,7 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await productsCollection.deleteOne(query);
             res.json(result);
-        })
+        });
 
         //?-------------------users------------------
 
@@ -144,7 +144,7 @@ async function run() {
             const query = { email: email };
             const user = await usersCollection.findOne(query);
             res.send({ isSeller: user?.role === 'seller' });
-        })
+        });
 
         //* isAdmin
         app.get('/users/admin/:email', async (req, res) => {
@@ -152,7 +152,7 @@ async function run() {
             const query = { email: email };
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
-        })
+        });
 
         //* load all sellers by role
         app.get('/users/sellers', async (req, res) => {
@@ -160,7 +160,7 @@ async function run() {
             const query = { role: seller };
             const result = await usersCollection.find(query).toArray();
             res.send(result);
-        })
+        });
 
         //* load all buyers by role
         app.get('/users/buyers', async (req, res) => {
@@ -168,7 +168,7 @@ async function run() {
             const query = { role: buyer };
             const result = await usersCollection.find(query).toArray();
             res.send(result);
-        })
+        });
 
         //* delete an user
         app.delete('/users/sellers/:id', async (req, res) => {
@@ -176,7 +176,7 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(query);
             res.json(result);
-        })
+        });
 
         //?------------Bookings-----------
 
@@ -185,7 +185,7 @@ async function run() {
             const booking = req.body;
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
-        })
+        });
 
         app.get('/bookings', verifyJWT, async (req, res) => {
             const decodedEmail = req.decoded.email;
@@ -196,7 +196,7 @@ async function run() {
             const query = { email: email };
             const orders = await bookingsCollection.find(query).toArray();
             res.send(orders);
-        })
+        });
 
         //* load payment order
         app.get('/payment/:id', async (req, res) => {
@@ -204,7 +204,9 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const order = await bookingsCollection.findOne(query);
             res.send(order);
-        })
+        });
+
+        //?------------payment-----------
 
         //* payment intent
         app.post('/create-payment-intent', async (req, res) => {
@@ -221,38 +223,55 @@ async function run() {
             res.send({
                 clientSecret: paymentIntent.client_secret
             })
-        })
+        });
 
         app.post('/payments/:productId', async (req, res) => {
             const payment = req.body;
             //* update product when it paid
             const productId = req.params.productId
             const filter1 = { _id: ObjectId(productId) };
+            const filter2 = { _id: productId }
             const updatedDoc1 = {
                 $set: {
                     status: 'sold',
                     transactionId: payment.transactionId
                 }
             };
-            const test = await productsCollection.updateOne(filter1, updatedDoc1);
+            const soldProduct1 = await productsCollection.updateOne(filter1, updatedDoc1);
+            const soldProduct2 = await advertiseItemsCollection.updateOne(filter2, updatedDoc1);
 
             //* store payment & update order when product paid 
-            const filter2 = { _id: ObjectId(payment.orderId) };
+            const filter3 = { _id: ObjectId(payment.orderId) };
             const updatedDoc2 = {
                 $set: {
                     paid: true,
                     transactionId: payment.transactionId
                 }
             };
-            const paidOrder = await bookingsCollection.updateOne(filter2, updatedDoc2);
+            const paidOrder = await bookingsCollection.updateOne(filter3, updatedDoc2);
             const result = await paymentsCollection.insertOne(payment);
             res.send(result);
-        })
+        });
 
+        //?------------payment-----------
 
+        //* store advertise item
+        app.post('/advertise', async (req, res) => {
+            const advertiseItem = req.body;
+            const result = await advertiseItemsCollection.insertOne(advertiseItem);
+            res.send(result);
+        });
+
+        //* load advertise item
+        app.get('/advertise', verifyJWT, async (req, res) => {
+            const query = {};
+            const advertiseItems = await advertiseItemsCollection.find(query).toArray();
+            const remainingAdvertiseItems = advertiseItems.filter(product => product.status !== 'sold');
+            res.send(remainingAdvertiseItems);
+        });
     }
     finally {
-
+        
     }
 }
 run().catch(err => console.log(err))
