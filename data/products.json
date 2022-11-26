@@ -9,10 +9,8 @@
         "original_price": 599,
         "year_of_use": 2,
         "post_time": "November 10 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Good",
         "purchase_year": 2020,
         "mobile_number": "01966699966",
@@ -28,10 +26,8 @@
         "original_price": 699,
         "year_of_use": 1.5,
         "post_time": "November 01 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Excellent",
         "purchase_year": 2021,
         "mobile_number": "01966699966",
@@ -47,10 +43,8 @@
         "original_price": 599,
         "year_of_use": 2.5,
         "post_time": "November 05 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Fair",
         "purchase_year": 2019,
         "mobile_number": "01966699966",
@@ -66,10 +60,8 @@
         "original_price": 799,
         "year_of_use": 2,
         "post_time": "November 08 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Good",
         "purchase_year": 2020,
         "mobile_number": "01963211478",
@@ -85,10 +77,8 @@
         "original_price": 599,
         "year_of_use": 1.5,
         "post_time": "November 06 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Excellent",
         "purchase_year": 2020,
         "mobile_number": "013698745",
@@ -104,10 +94,8 @@
         "original_price": 459,
         "year_of_use": 2.5,
         "post_time": "November 09 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Excellent",
         "purchase_year": 2019,
         "mobile_number": "013698745",
@@ -123,10 +111,8 @@
         "original_price": 399,
         "year_of_use": 1,
         "post_time": "November 08 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Good",
         "purchase_year": 2021,
         "mobile_number": "014789632",
@@ -142,10 +128,8 @@
         "original_price": 799,
         "year_of_use": 3.5,
         "post_time": "November 05 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Fair",
         "purchase_year": 2018,
         "mobile_number": "0199887456",
@@ -161,10 +145,8 @@
         "original_price": 619,
         "year_of_use": 4,
         "post_time": "November 19 2022",
-        "seller": {
-            "name": "Mohammed Amir",
-            "verify": true
-        },
+        "seller_name": "Mohammed Ajim",
+        "seller_verify": true,
         "condition": "Fair",
         "purchase_year": 2018,
         "mobile_number": "0189632147",
