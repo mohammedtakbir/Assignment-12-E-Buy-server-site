@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000;
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
-const stripe = require('stripe')(process.env.STRIPE_SK)
+const stripe = require('stripe')(process.env.STRIPE_SK);
 
 //* middleware
 app.use(cors());
@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
 
 function verifyJWT(req, res, next) {
     const authToken = req.headers.authorization
+    
     if (!authToken) {
         return res.status(401).send({ message: 'unauthorized access' })
     }
@@ -41,6 +42,29 @@ async function run() {
         const bookingsCollection = client.db('E-Buy').collection('bookings');
         const paymentsCollection = client.db('E-Buy').collection('payments');
         const advertiseItemsCollection = client.db('E-Buy').collection('advertiseItems');
+        const reportedItemsCollection = client.db('E-Buy').collection('reportedItems');
+
+        //* verify seller
+        const verifySeller = async (req, res, next) => {
+            const decodedEmail = req.decoded.email;
+            const query = { email: decodedEmail };
+            const seller = await usersCollection.findOne(query);
+            if (seller.role !== 'seller') {
+                return res.status(403).send({ message: 'Forbidden access' })
+            };
+            next();
+        }
+
+        //* verify admin
+        const verifyAdmin = async (req, res, next) => {
+            const decodedEmail = req.decoded.email;
+            const query = { email: decodedEmail };
+            const admin = await usersCollection.findOne(query);
+            if (admin.role !== 'admin') {
+                return res.status(403).send({ message: 'Forbidden access' })
+            };
+            next();
+        }
 
         //* get product Categories
         app.get('/productCategories', async (req, res) => {
@@ -67,7 +91,7 @@ async function run() {
         //?-------------------products------------------
 
         //* 
-        app.put('/products', async (req, res) => {
+        app.put('/products', verifyJWT, verifyAdmin, async (req, res) => {
             const email = req.query.email;
             const id = req.query.id;
 
@@ -92,20 +116,14 @@ async function run() {
         });
 
         //* add a new products to the database
-        app.post('/products', async (req, res) => {
-            const email = req.query.email;
-            const query = { email: email };
-            const seller = await usersCollection.findOne(query);
-            if (seller.role !== 'seller') {
-                return res.status(403).send({ message: 'Forbidden access' })
-            };
+        app.post('/products', verifyJWT, verifySeller, async (req, res) => {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
             res.send(result);
         });
 
         //* get all products based on product name
-        app.get('/products/:name', async (req, res) => {
+        app.get('/products/:name', verifyJWT, async (req, res) => {
             const name = req.params.name;
             const query = { name: name }
             const allProducts = await productsCollection.find(query).toArray();
@@ -114,7 +132,7 @@ async function run() {
         });
 
         //* get all products based on email
-        app.get('/products', async (req, res) => {
+        app.get('/products', verifyJWT, verifySeller, async (req, res) => {
             const email = req.query.email;
             const query = { sellerEmail: email };
             const products = await productsCollection.find(query).toArray();
@@ -122,7 +140,7 @@ async function run() {
         });
 
         //* delete a product
-        app.delete('/products/:id', async (req, res) => {
+        app.delete('/products/:id', verifyJWT, verifySeller, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await productsCollection.deleteOne(query);
@@ -155,7 +173,7 @@ async function run() {
         });
 
         //* load all sellers by role
-        app.get('/users/sellers', async (req, res) => {
+        app.get('/users/sellers', verifyJWT, verifyAdmin, async (req, res) => {
             const seller = req.query.user;
             const query = { role: seller };
             const result = await usersCollection.find(query).toArray();
@@ -163,7 +181,7 @@ async function run() {
         });
 
         //* load all buyers by role
-        app.get('/users/buyers', async (req, res) => {
+        app.get('/users/buyers', verifyJWT, verifyAdmin, async (req, res) => {
             const buyer = req.query.user;
             const query = { role: buyer };
             const result = await usersCollection.find(query).toArray();
@@ -171,7 +189,7 @@ async function run() {
         });
 
         //* delete an user
-        app.delete('/users/sellers/:id', async (req, res) => {
+        app.delete('/users/sellers/:id', verifyJWT, verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(query);
@@ -187,6 +205,8 @@ async function run() {
             res.send(result);
         });
 
+        //! wrong naming convention
+
         app.get('/bookings', verifyJWT, async (req, res) => {
             const decodedEmail = req.decoded.email;
             const email = req.query.email;
@@ -198,18 +218,18 @@ async function run() {
             res.send(orders);
         });
 
+        //?------------payment-----------
+
         //* load payment order
-        app.get('/payment/:id', async (req, res) => {
+        app.get('/payment/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const order = await bookingsCollection.findOne(query);
             res.send(order);
         });
 
-        //?------------payment-----------
-
         //* payment intent
-        app.post('/create-payment-intent', async (req, res) => {
+        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
             const order = req.body;
             const price = order.price;
             const amount = price * 100;
@@ -225,12 +245,12 @@ async function run() {
             })
         });
 
-        app.post('/payments/:productId', async (req, res) => {
+        app.post('/payments/:productId', verifyJWT, async (req, res) => {
             const payment = req.body;
             //* update product when it paid
             const productId = req.params.productId
             const filter1 = { _id: ObjectId(productId) };
-            const filter2 = { _id: productId }
+            
             const updatedDoc1 = {
                 $set: {
                     status: 'sold',
@@ -238,6 +258,8 @@ async function run() {
                 }
             };
             const soldProduct1 = await productsCollection.updateOne(filter1, updatedDoc1);
+
+            const filter2 = { _id: productId }
             const soldProduct2 = await advertiseItemsCollection.updateOne(filter2, updatedDoc1);
 
             //* store payment & update order when product paid 
@@ -253,28 +275,55 @@ async function run() {
             res.send(result);
         });
 
-        //?------------payment-----------
+        //?------------Advertise-----------
 
         //* store advertise item
-        app.post('/advertise', async (req, res) => {
+        app.post('/advertise', verifyJWT, verifySeller, async (req, res) => {
             const advertiseItem = req.body;
             const result = await advertiseItemsCollection.insertOne(advertiseItem);
             res.send(result);
         });
 
         //* load advertise item
-        app.get('/advertise', verifyJWT, async (req, res) => {
+        app.get('/advertise', async (req, res) => {
             const query = {};
             const advertiseItems = await advertiseItemsCollection.find(query).toArray();
             const remainingAdvertiseItems = advertiseItems.filter(product => product.status !== 'sold');
             res.send(remainingAdvertiseItems);
         });
+
+        //?------------Reported Items-----------
+
+        //* store reported item
+        app.post('/reportedItems', verifyJWT, async (req, res) => {
+            const reportedItem = req.body;
+            const result = await reportedItemsCollection.insertOne(reportedItem);
+            res.send(result);
+        })
+
+        //* load reported items
+        app.get('/reportedItems', verifyJWT, verifyAdmin, async (req, res) => {
+            const query = {};
+            const result = await reportedItemsCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        //* Delete reported item
+        app.delete('/reportedItems/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const reportedQuery = { _id: id };
+            const productsQuery = { _id: ObjectId(id) };
+            const deletedFromProduct = await productsCollection.deleteOne(productsQuery);
+            const deletedFromAdvertiseItems = await advertiseItemsCollection.deleteOne(reportedQuery);
+            const deletedFromReportedItems = await reportedItemsCollection.deleteOne(reportedQuery);
+            res.send(deletedFromReportedItems);
+        })
     }
     finally {
-        
+
     }
 }
-run().catch(err => console.log(err))
+run().catch(err => console.log(err));
 
 
 app.listen(port, () => {
