@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 
 function verifyJWT(req, res, next) {
     const authToken = req.headers.authorization
-    
+
     if (!authToken) {
         return res.status(401).send({ message: 'unauthorized access' })
     }
@@ -143,6 +143,8 @@ async function run() {
         app.delete('/products/:id', verifyJWT, verifySeller, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
+            const query2 = { _id: id };
+            const deletingFromAdvertiseItems = await advertiseItemsCollection.deleteOne(query2);
             const result = await productsCollection.deleteOne(query);
             res.json(result);
         });
@@ -250,7 +252,7 @@ async function run() {
             //* update product when it paid
             const productId = req.params.productId
             const filter1 = { _id: ObjectId(productId) };
-            
+
             const updatedDoc1 = {
                 $set: {
                     status: 'sold',
