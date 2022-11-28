@@ -43,6 +43,7 @@ async function run() {
         const paymentsCollection = client.db('E-Buy').collection('payments');
         const advertiseItemsCollection = client.db('E-Buy').collection('advertiseItems');
         const reportedItemsCollection = client.db('E-Buy').collection('reportedItems');
+        const newArrivalProductsCollection = client.db('E-Buy').collection('newArrivalProducts');
 
         //* verify seller
         const verifySeller = async (req, res, next) => {
@@ -319,6 +320,13 @@ async function run() {
             const deletedFromAdvertiseItems = await advertiseItemsCollection.deleteOne(reportedQuery);
             const deletedFromReportedItems = await reportedItemsCollection.deleteOne(reportedQuery);
             res.send(deletedFromReportedItems);
+        })
+
+        //* load new arrival products
+        app.get('/newArrivalProducts', async (req, res) => {
+            const query = {};
+            const result = await newArrivalProductsCollection.find(query).toArray();
+            res.send(result);
         })
     }
     finally {
