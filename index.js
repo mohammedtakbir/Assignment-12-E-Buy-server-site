@@ -311,6 +311,14 @@ async function run() {
             res.send(result);
         })
 
+        //* get reported items by ID
+        app.get('/reportedItems/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: id};
+            const reportedItem = await reportedItemsCollection.findOne(query);
+            res.send({reportedStatus: reportedItem?.status});
+        })
+
         //* Delete reported item
         app.delete('/reportedItems/:id', verifyJWT, verifyAdmin, async (req, res) => {
             const id = req.params.id;
@@ -334,7 +342,6 @@ async function run() {
     }
 }
 run().catch(err => console.log(err));
-
 
 app.listen(port, () => {
     console.log(`E-Buy server is running on ${port} port`)
