@@ -124,7 +124,7 @@ async function run() {
         });
 
         //* get all products based on product name
-        app.get('/products/:name', verifyJWT, async (req, res) => {
+        app.get('/products/:name', async (req, res) => {
             const name = req.params.name;
             const query = { name: name }
             const allProducts = await productsCollection.find(query).toArray();
@@ -149,6 +149,14 @@ async function run() {
             const result = await productsCollection.deleteOne(query);
             res.json(result);
         });
+
+        //* get selected product by ID
+        app.get('/selectedProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const selectedProducts = await productsCollection.findOne(query);
+            res.send(selectedProducts);
+        })
 
         //?-------------------users------------------
 
