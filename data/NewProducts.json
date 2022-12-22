@@ -13,6 +13,8 @@
         "seller_verify": true,
         "condition": "Good",
         "purchase_year": 2021,
+        "color": "Black",
+        "storage": "128",
         "mobile_number": "01966699966",
         "description": "Very good condition. Not even a single scratch or dent."
     },
@@ -30,6 +32,8 @@
         "seller_verify": true,
         "condition": "Good",
         "purchase_year": 2020,
+        "color": "Light Green",
+        "storage": "256",
         "mobile_number": "0136987745",
         "description": "Very good condition. Not even a single scratch or dent."
     },
@@ -47,6 +51,8 @@
         "seller_verify": true,
         "condition": "Excellent",
         "purchase_year": 2021,
+        "color": "Blue",
+        "storage": "128",
         "mobile_number": "0369874555",
         "description": "Very good condition. Not even a single scratch or dent."
     },
@@ -63,6 +69,8 @@
         "seller_name": "Mohammed Jihad",
         "seller_verify": true,
         "condition": "Fair",
+        "color": "Deep Black",
+        "storage": "64",
         "purchase_year": 2019,
         "mobile_number": "0369897485",
         "description": "Very good condition. Not even a single scratch or dent."

@@ -33,6 +33,7 @@ function verifyJWT(req, res, next) {
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.drjbcpx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+console.log(uri)
 
 async function run() {
     try {
@@ -153,7 +154,7 @@ async function run() {
         //* get selected product by ID
         app.get('/selectedProducts/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const selectedProducts = await productsCollection.findOne(query);
             res.send(selectedProducts);
         })
@@ -303,6 +304,14 @@ async function run() {
             res.send(remainingAdvertiseItems);
         });
 
+        //* get advertise item by ID
+        app.get('/selectedItem/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: id };
+            const selectedAdvertiseItem = await advertiseItemsCollection.findOne(query);
+            res.send(selectedAdvertiseItem);
+        })
+
         //?------------Reported Items-----------
 
         //* store reported item
@@ -320,11 +329,11 @@ async function run() {
         })
 
         //* get reported items by ID
-        app.get('/reportedItems/:id', async(req, res) => {
+        app.get('/reportedItems/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: id};
+            const query = { _id: id };
             const reportedItem = await reportedItemsCollection.findOne(query);
-            res.send({reportedStatus: reportedItem?.status});
+            res.send({ reportedStatus: reportedItem?.status });
         })
 
         //* Delete reported item
@@ -335,6 +344,8 @@ async function run() {
             const deletedFromProduct = await productsCollection.deleteOne(productsQuery);
             const deletedFromAdvertiseItems = await advertiseItemsCollection.deleteOne(reportedQuery);
             const deletedFromReportedItems = await reportedItemsCollection.deleteOne(reportedQuery);
+            //* work letter
+            // const deletedFromNewArrivalItems = await newArrivalProductsCollection.deleteOne(productsQuery);
             res.send(deletedFromReportedItems);
         })
 
@@ -342,6 +353,13 @@ async function run() {
         app.get('/newArrivalProducts', async (req, res) => {
             const query = {};
             const result = await newArrivalProductsCollection.find(query).toArray();
+            res.send(result);
+        })
+        //* get new arrival items item by ID
+        app.get('/newArrivalItem/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await newArrivalProductsCollection.findOne(query);
             res.send(result);
         })
     }
