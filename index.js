@@ -33,7 +33,6 @@ function verifyJWT(req, res, next) {
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.drjbcpx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-console.log(uri)
 
 async function run() {
     try {
@@ -44,7 +43,6 @@ async function run() {
         const paymentsCollection = client.db('E-Buy').collection('payments');
         const advertiseItemsCollection = client.db('E-Buy').collection('advertiseItems');
         const reportedItemsCollection = client.db('E-Buy').collection('reportedItems');
-        const newArrivalProductsCollection = client.db('E-Buy').collection('newArrivalProducts');
 
         //* verify seller
         const verifySeller = async (req, res, next) => {
@@ -351,15 +349,15 @@ async function run() {
 
         //* load new arrival products
         app.get('/newArrivalProducts', async (req, res) => {
-            const query = {};
-            const result = await newArrivalProductsCollection.find(query).toArray();
+            const query = { isNewProduct: 'yes' };
+            const result = await productsCollection.find(query).toArray();
             res.send(result);
         })
         //* get new arrival items item by ID
         app.get('/newArrivalItem/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const result = await newArrivalProductsCollection.findOne(query);
+            const result = await productsCollection.findOne(query);
             res.send(result);
         })
     }
