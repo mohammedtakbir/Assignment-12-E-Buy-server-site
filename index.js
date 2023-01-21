@@ -132,11 +132,12 @@ async function run() {
         });
 
         //* get all products based on email
-        app.get('/products', verifyJWT, verifySeller, async (req, res) => {
+        app.get('/products', async (req, res) => {
             const email = req.query.email;
             const query = { sellerEmail: email };
             const products = await productsCollection.find(query).toArray();
             res.send(products);
+            console.log(query)
         });
 
         //* delete a product
@@ -213,6 +214,7 @@ async function run() {
             const booking = req.body;
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
+            console.log(booking)
         });
 
         //! wrong naming convention
@@ -283,6 +285,7 @@ async function run() {
             const paidOrder = await bookingsCollection.updateOne(filter3, updatedDoc2);
             const result = await paymentsCollection.insertOne(payment);
             res.send(result);
+            console.log(payment, productId)
         });
 
         //?------------Advertise-----------
@@ -350,8 +353,9 @@ async function run() {
         //* load new arrival products
         app.get('/newArrivalProducts', async (req, res) => {
             const query = { isNewProduct: 'yes' };
-            const result = await productsCollection.find(query).toArray();
-            res.send(result);
+            const newArrivalItems = await productsCollection.find(query).toArray();
+            const remainingArrivalItems = newArrivalItems.filter(newArrivalItem => newArrivalItem.status !== 'sold');
+            res.send(remainingArrivalItems);
         })
         //* get new arrival items item by ID
         app.get('/newArrivalItem/:id', async (req, res) => {
