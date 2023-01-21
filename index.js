@@ -212,9 +212,19 @@ async function run() {
         //* store booked product to the database
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
-            const result = await bookingsCollection.insertOne(booking);
-            res.send(result);
-            console.log(booking)
+
+            const query = {
+                email: booking.email,
+                productId: booking.productId
+            }
+
+            const isAlreadyBooked = await bookingsCollection.findOne(query);
+            if (!isAlreadyBooked) {
+                const result = await bookingsCollection.insertOne(booking);
+                res.send(result);
+            } else {
+                return res.send({ message: "You've already booked this product." })
+            }
         });
 
         //! wrong naming convention
