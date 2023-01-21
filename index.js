@@ -137,7 +137,6 @@ async function run() {
             const query = { sellerEmail: email };
             const products = await productsCollection.find(query).toArray();
             res.send(products);
-            console.log(query)
         });
 
         //* delete a product
@@ -295,7 +294,6 @@ async function run() {
             const paidOrder = await bookingsCollection.updateOne(filter3, updatedDoc2);
             const result = await paymentsCollection.insertOne(payment);
             res.send(result);
-            console.log(payment, productId)
         });
 
         //?------------Advertise-----------
@@ -306,6 +304,13 @@ async function run() {
             const result = await advertiseItemsCollection.insertOne(advertiseItem);
             res.send(result);
         });
+
+        app.get('/isAdvertise/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: id };
+            const advertiseItem = await advertiseItemsCollection.findOne(query);
+            res.send({ isAdvertise: advertiseItem?.isAdvertise });
+        })
 
         //* load advertise item
         app.get('/advertise', async (req, res) => {
