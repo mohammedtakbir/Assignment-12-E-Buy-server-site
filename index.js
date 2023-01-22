@@ -123,12 +123,24 @@ async function run() {
         });
 
         //* get all products based on product name
-        app.get('/products/:name', async (req, res) => {
-            const name = req.params.name;
-            const query = { name: name }
-            const allProducts = await productsCollection.find(query).toArray();
-            const remainingProducts = allProducts.filter(product => product.status !== 'sold');
-            res.send(remainingProducts);
+        app.get('/products', async (req, res) => {
+            const name = req.query.name;
+            const sort = req.query.sort;
+            const query = { name: name };
+
+            if (sort === 'lowtohigh') {
+                const allProducts = await productsCollection.find(query).sort({ resale_price: 1 }).toArray();
+                const remainingProducts = allProducts.filter(product => product.status !== 'sold');
+                res.send(remainingProducts);
+            } else if (sort === 'hightolow') {
+                const allProducts = await productsCollection.find(query).sort({ resale_price: -1 }).toArray();
+                const remainingProducts = allProducts.filter(product => product.status !== 'sold');
+                res.send(remainingProducts);
+            } else {
+                const allProducts = await productsCollection.find(query).toArray();
+                const remainingProducts = allProducts.filter(product => product.status !== 'sold');
+                res.send(remainingProducts);
+            }
         });
 
         //* get all products based on email
