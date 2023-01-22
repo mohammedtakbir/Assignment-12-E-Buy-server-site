@@ -126,7 +126,11 @@ async function run() {
         app.get('/products', async (req, res) => {
             const name = req.query.name;
             const sort = req.query.sort;
-            const query = { name: name };
+
+            const query = {
+                name: name,
+
+            };
 
             if (sort === 'lowtohigh') {
                 const allProducts = await productsCollection.find(query).sort({ resale_price: 1 }).toArray();
@@ -143,6 +147,19 @@ async function run() {
             }
         });
 
+        app.get('/searchProducts', async (req, res) => {
+            const search = req.query.search;
+            const query = {
+                $text:
+                {
+                    $search: search
+                }
+            }
+            const searchProducts = await productsCollection.find(query).toArray();
+            const remainingProducts = searchProducts.filter(product => product.status !== 'sold');
+            res.send(remainingProducts);
+        })
+        
         //* get all products based on email
         app.get('/products', async (req, res) => {
             const email = req.query.email;
